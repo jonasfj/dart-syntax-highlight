@@ -1,0 +1,44 @@
+{
+  "name": "codemirror-lang-dart",
+  "version": "1.0.0",
+  "description": "Lezer-based Dart grammar",
+  "main": "dist/index.cjs",
+  "type": "module",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Dart project authors",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@lezer/common": "^1.2.0",
+    "@lezer/highlight": "^1.2.0",
+    "@lezer/lr": "^1.4.0"
+  },
+  "devDependencies": {
+    "@lezer/generator": "^1.8.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/mocha": "^10.0.10",
+    "mocha": "^10.2.0",
+    "rollup": "^2.52.2",
+    "tslib": "^2.6.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.2.2",
+    "typescript-eslint": "^8.53.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dart-lang/dart-syntax-highlight"
+  },
+  "scripts": {
+    "build": "lezer-generator src/dart.grammar -o src/parser && rollup -c",
+    "build-debug": "lezer-generator src/dart.grammar --names -o src/parser && rollup -c",
+    "prepare": "npm run build",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "test": "npm run build && mocha --node-option import=tsx src/lang-dart/test/test.ts"
+  }
+}

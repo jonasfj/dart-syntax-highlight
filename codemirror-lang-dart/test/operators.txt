@@ -1,0 +1,40 @@
+# Bitwise Operators
+
+a & b;
+a | b;
+a ^ b;
+~a;
+a << b;
+a >> b;
+a >>> b;
+
+==>
+
+Program(TopLevelExpression(BinaryExpression(Identifier,"&",Identifier),";"),TopLevelExpression(BinaryExpression(Identifier,"|",Identifier),";"),TopLevelExpression(BinaryExpression(Identifier,"^",Identifier),";"),TopLevelExpression(UnaryExpression("~",Identifier),";"),TopLevelExpression(BinaryExpression(Identifier,ShiftOp,Identifier),";"),TopLevelExpression(BinaryExpression(Identifier,ShiftOp,Identifier),";"),TopLevelExpression(BinaryExpression(Identifier,ShiftOp,Identifier),";"))
+
+# Compound Assignment
+
+a += b;
+a -= b;
+a *= b;
+a /= b;
+a %= b;
+a ~/= b;
+a <<= b;
+a &= b;
+a |= b;
+a ^= b;
+
+==>
+
+Program(TopLevelExpression(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),CompoundAssign,Identifier),";"),TopLevelExpression(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),CompoundAssign,Identifier),";"),TopLevelExpression(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),CompoundAssign,Identifier),";"),TopLevelExpression(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),CompoundAssign,Identifier),";"),TopLevelExpression(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),CompoundAssign,Identifier),";"),TopLevelExpression(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),CompoundAssign,Identifier),";"),TopLevelExpression(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),CompoundAssign,Identifier),";"),TopLevelExpression(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),CompoundAssign,Identifier),";"),TopLevelExpression(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),CompoundAssign,Identifier),";"),TopLevelExpression(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),CompoundAssign,Identifier),";"))
+
+# Precedence
+
+a + b * c;
+a | b & c;
+a || b && c;
+
+==>
+
+Program(TopLevelExpression(BinaryExpression(Identifier,"+",BinaryExpression(Identifier,"*",Identifier)),";"),TopLevelExpression(BinaryExpression(Identifier,"|",BinaryExpression(Identifier,"&",Identifier)),";"),TopLevelExpression(BinaryExpression(Identifier,"||",BinaryExpression(Identifier,"&&",Identifier)),";"))

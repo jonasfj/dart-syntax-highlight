@@ -1,0 +1,20 @@
+# Null-aware
+
+var x = a ?? b;
+var y = a?.b;
+var z = a?[b];
+a!;
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",BinaryExpression(Identifier,"??",Identifier),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",MemberExpression(Identifier,"?.",Identifier),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",IndexExpression(Identifier,QuestionBracket,Identifier,"]"),";")),TopLevelExpression(UnaryExpression(Identifier,"!"),";"))
+
+# Type Test
+
+var b = a is int;
+var c = a is! int;
+var d = a as int;
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",TypeExpression(Identifier,is,Type(TypeNoQuestion(TypeIdentifier(Identifier)))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",TypeExpression(Identifier,is,"!",Type(TypeNoQuestion(TypeIdentifier(Identifier)))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",TypeExpression(Identifier,as,Type(TypeNoQuestion(TypeIdentifier(Identifier)))),";")))

@@ -1,0 +1,52 @@
+# Modifiers
+
+abstract class A {}
+final class B {}
+sealed class C {}
+interface class D {}
+base class E {}
+
+==>
+
+Program(Declaration(ClassDeclaration(abstract,class,Identifier,ClassBody("{","}"))),Declaration(ClassDeclaration(final,class,Identifier,ClassBody("{","}"))),Declaration(ClassDeclaration(sealed,class,Identifier,ClassBody("{","}"))),Declaration(ClassDeclaration(interface,class,Identifier,ClassBody("{","}"))),Declaration(ClassDeclaration(base,class,Identifier,ClassBody("{","}"))))
+
+# Mixin
+
+mixin M on A implements B {}
+base mixin M2 {}
+
+==>
+
+Program(Declaration(MixinDeclaration(mixin,Identifier,on,TypeList(Type(TypeNoQuestion(TypeIdentifier(Identifier)))),implements,TypeList(Type(TypeNoQuestion(TypeIdentifier(Identifier)))),ClassBody("{","}"))),Declaration(MixinDeclaration(base,mixin,Identifier,ClassBody("{","}"))))
+
+# Extension Type
+
+extension type E(int i) {}
+extension type const E2.named(int i) implements I {}
+
+==>
+
+Program(Declaration(ExtensionTypeDeclaration(extension,type,Type(TypeNoQuestion(TypeIdentifier(Identifier))),"(",ParameterList(Parameter(Type(TypeNoQuestion(TypeIdentifier(Identifier))),Identifier)),")",ClassBody("{","}"))),Declaration(ExtensionTypeDeclaration(extension,type,const,Type(TypeNoQuestion(TypeIdentifier(Identifier))),".",Identifier,"(",ParameterList(Parameter(Type(TypeNoQuestion(TypeIdentifier(Identifier))),Identifier)),")",implements,TypeList(Type(TypeNoQuestion(TypeIdentifier(Identifier)))),ClassBody("{","}"))))
+
+# Getter/Setter
+
+class A {
+  int get x => 1;
+  set x(int v) { _x = v; }
+}
+
+==>
+
+Program(Declaration(ClassDeclaration(class,Identifier,ClassBody("{",MemberDeclaration(Getter(Type(TypeNoQuestion(TypeIdentifier(Identifier))),get,Identifier,"=>",Literal(NumberLiteral),";")),MemberDeclaration(Setter(set,Identifier,"(",Parameter(Type(TypeNoQuestion(TypeIdentifier(Identifier))),Identifier),")",Block("{",Statement(ExpressionStatement(AssignmentExpression(Pattern(PrimaryPattern(Identifier)),"=",Identifier),";")),"}"))),"}"))))
+
+# Constructors
+
+class A {
+  A();
+  const A.named();
+  A.init() : super();
+}
+
+==>
+
+Program(Declaration(ClassDeclaration(class,Identifier,ClassBody("{",MemberDeclaration(ConstructorDeclaration(Identifier,"(",ParameterList,")",";")),MemberDeclaration(ConstructorDeclaration(const,Identifier,".",Identifier,"(",ParameterList,")",";")),MemberDeclaration(ConstructorDeclaration(Identifier,".",Identifier,"(",ParameterList,")",":",Initializers(Initializer(super,ArgumentList("(",")"))),";")),"}"))))

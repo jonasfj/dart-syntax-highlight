@@ -20,6 +20,10 @@ following files which do not have automated updates from this grammar:
 * [Dart-Code/Dart-Code/syntaxes/dart.json](https://github.com/Dart-Code/Dart-Code/blob/master/syntaxes/dart.json)
 * [flutter/devtools/packages/devtools_app/assets/dart_syntax.json](https://github.com/flutter/devtools/blob/master/packages/devtools_app/assets/dart_syntax.json)
 
+## codemirror-lang-dart
+
+A [Lezer](https://lezer.codemirror.net/) language grammar for Dart.
+
 # Other solutions
 
 ## highlight.js

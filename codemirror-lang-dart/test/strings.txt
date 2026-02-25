@@ -1,0 +1,53 @@
+# Simple Strings
+
+var s1 = 'hello';
+var s2 = "world";
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(SingleString(SingleQuote,SingleQuoteEnd))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(DoubleString(DoubleQuote,DoubleQuoteEnd))),";")))
+
+# Interpolation
+
+var s = "hello $name";
+var s2 = 'val: ${x + 1}';
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(DoubleString(DoubleQuote,InterpolationDouble(DoubleInterpolationStart,Identifier),DoubleQuoteEnd))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(SingleString(SingleQuote,InterpolationSingle(SingleInterpolationStart,"{",BinaryExpression(Identifier,"+",Literal(NumberLiteral)),"}"),SingleQuoteEnd))),";")))
+
+# Escapes
+
+var s = "a \" b";
+var s2 = 'a \' b';
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(DoubleString(DoubleQuote,DoubleEscape,DoubleQuoteEnd))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(SingleString(SingleQuote,SingleEscape,SingleQuoteEnd))),";")))
+
+# Adjacent Strings
+
+var s = 'a' "b";
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(SingleString(SingleQuote,SingleQuoteEnd),DoubleString(DoubleQuote,DoubleQuoteEnd))),";")))
+
+# Triple Strings
+
+var s1 = '''multi
+line''';
+var s2 = """$interpolated""";
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(TripleSingleString(TripleSingleQuote,TripleSingleQuoteEnd))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(TripleDoubleString(TripleDoubleQuote,InterpolationTripleDouble(TripleDoubleInterpolationStart,Identifier),TripleDoubleQuoteEnd))),";")))
+
+# Raw Strings
+
+var r1 = r'no $interp';
+var r2 = r"no \escapes";
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(RawString(RawSingleString(RawSingleQuote,RawSingleQuoteEnd)))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(RawString(RawDoubleString(RawDoubleQuote,RawDoubleQuoteEnd)))),";")))

@@ -1,0 +1,25 @@
+# Declaration
+
+var x = 1;
+void main() {}
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(NumberLiteral),";")),Declaration(FunctionDeclaration(Type(TypeNoQuestion(void)),Identifier,"(",ParameterList,")",Block("{","}"))))
+
+# Function
+
+void main() {
+}
+
+==>
+
+Program(Declaration(FunctionDeclaration(Type(TypeNoQuestion(void)),Identifier,"(",ParameterList,")",Block("{","}"))))
+
+# Function Type
+
+void f(int Function(String) callback) {}
+
+==>
+
+Program(Declaration(FunctionDeclaration(Type(TypeNoQuestion(void)),Identifier,"(",ParameterList(Parameter(Type(TypeNoQuestion(FunctionType(Type(TypeNoQuestion(TypeIdentifier(Identifier))),Function,"(",ParameterTypeList(ParameterType(Type(TypeNoQuestion(TypeIdentifier(Identifier))))),")"))),Identifier)),")",Block("{","}"))))

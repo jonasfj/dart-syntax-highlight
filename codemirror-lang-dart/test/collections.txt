@@ -1,0 +1,29 @@
+# List Literal
+
+var l = [1, 2, 3];
+var l2 = const <int>[];
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(ListLiteral("[",Element(Literal(NumberLiteral)),",",Element(Literal(NumberLiteral)),",",Element(Literal(NumberLiteral)),"]")),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(ListLiteral(const,TypeArguments("<",Type(TypeNoQuestion(TypeIdentifier(Identifier))),">"),"[","]")),";")))
+
+# Set/Map Literal
+
+var m = {1: 2, 3: 4};
+var s = {1, 2, 3};
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(SetOrMapLiteral("{",Element(MapEntry(Literal(NumberLiteral),":",Literal(NumberLiteral))),",",Element(MapEntry(Literal(NumberLiteral),":",Literal(NumberLiteral))),"}")),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(SetOrMapLiteral("{",Element(Literal(NumberLiteral)),",",Element(Literal(NumberLiteral)),",",Element(Literal(NumberLiteral)),"}")),";")))
+
+# Collection Elements
+
+var l = [
+  if (c) 1 else 2,
+  for (var i in l) i,
+  ...l
+];
+
+==>
+
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(ListLiteral("[",Element(IfElement(if,"(",Identifier,")",Element(Literal(NumberLiteral)),else,Element(Literal(NumberLiteral)))),",",Element(ForElement(for,"(",var,Pattern(PrimaryPattern(Identifier)),in,Identifier,")",Element(Identifier))),",",Element(SpreadElement(Identifier)),"]")),";")))
