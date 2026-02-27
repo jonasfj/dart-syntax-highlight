@@ -1,0 +1,56 @@
+# Enhanced Enums
+
+enum Color {
+  red(1),
+  blue(2);
+  final int value;
+  const Color(this.value);
+}
+
+==>
+
+Program(
+  Declaration(
+    EnumDeclaration(
+      enum,
+      Identifier,
+      "{",
+      EnumBody(
+        EnumEntry(Identifier, ArgumentList("(", Literal(NumberLiteral), ")")),
+        ",",
+        EnumEntry(Identifier, ArgumentList("(", Literal(NumberLiteral), ")")),
+        ";",
+        MemberDeclaration(VariableDeclaration(final, Type(TypeNoQuestion(TypeIdentifier(Identifier))), Identifier)),
+        MemberDeclaration(ConstructorDeclaration(const, Identifier, "(", ParameterList(Parameter(this, ".", Identifier)), ")", ";"))
+      ),
+      "}"
+    )
+  )
+)
+
+# Multiple Extends (Graceful Degradation)
+
+abstract class Foo extends Bar1, Bar2, Bar3 implements Baz {}
+
+==>
+
+Program(
+  Declaration(
+    ClassDeclaration(
+      abstract,
+      class,
+      Identifier,
+      extends,
+      TypeList(
+        Type(TypeNoQuestion(TypeIdentifier(Identifier))),
+        ",",
+        Type(TypeNoQuestion(TypeIdentifier(Identifier))),
+        ",",
+        Type(TypeNoQuestion(TypeIdentifier(Identifier)))
+      ),
+      implements,
+      TypeList(Type(TypeNoQuestion(TypeIdentifier(Identifier)))),
+      ClassBody("{", "}")
+    )
+  )
+)

@@ -58,6 +58,6 @@
     "prepare": "npm run build",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
-    "test": "npm run build && tsx test/grammar/test.ts && tsx test/language/mixed-mode.ts && tsx test/language/indent.ts"
+    "test": "npm run build && tsx test/grammar/test.ts test/language/mixed-mode.ts test/language/indent.ts"
   }
 }

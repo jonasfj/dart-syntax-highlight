@@ -13,6 +13,9 @@
   func,
   param,
   catch,
+  varDeclIdentifier,
+  constructor,
+  pattern,
   mul @left,
   add @left,
   shift @left,
@@ -114,16 +117,26 @@ ExtensionTypeDeclaration {
 }
 
 EnumDeclaration {
-  kw<"enum"> Identifier "{" (Identifier ("," Identifier)* ","?)? "}"
+  kw<"enum"> Identifier (!generic TypeArguments)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? "{" EnumBody? "}"
+}
+
+EnumBody {
+  EnumEntry ("," EnumEntry)* ","? ";" MemberDeclaration* |
+  EnumEntry ("," EnumEntry)* ","? |
+  ";" MemberDeclaration*
+}
+
+EnumEntry {
+  Metadata* Identifier TypeArguments? ("." Identifier)? ArgumentList?
 }
 
 ClassDeclaration {
-  classModifier+ ~mod kw<"class"> Identifier (kw<"extends"> Type)? (kw<"implements"> TypeList)? (kw<"with"> TypeList)? ClassBody |
-  kw<"class"> Identifier (kw<"extends"> Type)? (kw<"implements"> TypeList)? (kw<"with"> TypeList)? ClassBody
+  classModifier+ ~mod kw<"class"> Identifier (kw<"extends"> TypeList)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody |
+  kw<"class"> Identifier (kw<"extends"> TypeList)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody
 }
 
 classModifier {
-  kw<"abstract"> | kw<"base"> | kw<"interface"> | kw<"final"> | kw<"sealed">
+  kw<"abstract"> | kw<"base"> | kw<"interface"> | kw<"final"> | kw<"sealed"> | kw<"mixin">
 }
 
 MixinDeclaration {
@@ -144,8 +157,16 @@ ClassBody {
 }
 
 MemberDeclaration {
-  Metadata* (FunctionDeclaration | Getter | Setter | VariableDeclaration | ConstructorDeclaration)
+  Metadata* (
+    !constructor ConstructorDeclaration | 
+    FunctionDeclaration | 
+    Getter | 
+    Setter | 
+    VariableDeclaration
+  ) |
+  ";"
 }
+
 
 Getter {
   Type? kw<"get"> Identifier (Block | "=>" expression ";")
@@ -187,15 +208,23 @@ ParameterType {
   Metadata* Type Identifier?
 }
 
-ConstructorDeclaration {
-  (kw<"const"> | kw<"factory">)? Identifier ("." Identifier)? "(" ParameterList ")"
+ConstructorDeclaration[@dynamicPrecedence=10] {
+  !constructor (kw<"const"> !constructor | kw<"factory">) ~mod Identifier ("." Identifier)? ~constructor !constructor "(" ParameterList ")"
   (
     ":" Initializers (Block | ";") |
     "=" Type ("." Identifier)? ";" |
     Block |
     "=>" expression ";" |
     ";"
-  ) ~ambig
+  ) |
+  !constructor Identifier ("." Identifier)? "(" ParameterList ")"
+  (
+    ":" Initializers (Block | ";") |
+    "=" Type ("." Identifier)? ";" |
+    Block |
+    "=>" expression ";" |
+    ";"
+  )
 }
 
 Initializers {
@@ -324,9 +353,13 @@ ReturnStatement {
 
 VariableDeclaration {
   (
-    Type ~ambig Identifier ("=" expression)? |
-    (kw<"var"> | kw<"final"> | kw<"const">) Pattern ("=" expression)?
-  ) ";"
+    (kw<"var"> | kw<"final"> | kw<"const">)? Type !varDeclIdentifier Identifier ("=" expression)? |
+    patternVarDecl
+  ) ~ambig ";"
+}
+
+patternVarDecl[@dynamicPrecedence=-10] {
+  (kw<"var"> | kw<"final"> | kw<"const">) !pattern Pattern ("=" expression)?
 }
 
 Literal {
@@ -673,9 +706,7 @@ PrimaryPattern {
   Identifier ~ambig |
   ParenthesizedPattern |
   ListPattern |
-  MapPattern |
-  RecordPattern |
-  ObjectPattern
+  MapPattern
 }
 
 ParenthesizedPattern { "(" Pattern ~ambig ")" ~ambig }
@@ -703,6 +734,6 @@ PatternField {
   (Identifier ~ambig ":")? Pattern ~ambig
 }
 
-ObjectPattern {
-  TypeNoQuestion (!generic TypeArguments)? ~ambig "(" (PatternField ("," PatternField)* ","?)? ")"
+ObjectPattern[@dynamicPrecedence=-2] {
+  TypeNoQuestion (!generic TypeArguments)? ~ambig ~constructor "(" (PatternField ("," PatternField)* ","?)? ")"
 }
