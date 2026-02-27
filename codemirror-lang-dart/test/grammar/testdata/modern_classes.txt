@@ -27,30 +27,3 @@ Program(
     )
   )
 )
-
-# Multiple Extends (Graceful Degradation)
-
-abstract class Foo extends Bar1, Bar2, Bar3 implements Baz {}
-
-==>
-
-Program(
-  Declaration(
-    ClassDeclaration(
-      abstract,
-      class,
-      Identifier,
-      extends,
-      TypeList(
-        Type(TypeNoQuestion(TypeIdentifier(Identifier))),
-        ",",
-        Type(TypeNoQuestion(TypeIdentifier(Identifier))),
-        ",",
-        Type(TypeNoQuestion(TypeIdentifier(Identifier)))
-      ),
-      implements,
-      TypeList(Type(TypeNoQuestion(TypeIdentifier(Identifier)))),
-      ClassBody("{", "}")
-    )
-  )
-)

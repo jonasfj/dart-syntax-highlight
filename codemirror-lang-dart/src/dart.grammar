@@ -131,8 +131,8 @@ EnumEntry {
 }
 
 ClassDeclaration {
-  classModifier+ ~mod kw<"class"> Identifier (kw<"extends"> TypeList)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody |
-  kw<"class"> Identifier (kw<"extends"> TypeList)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody
+  classModifier+ ~mod kw<"class"> Identifier (kw<"extends"> Type)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody |
+  kw<"class"> Identifier (kw<"extends"> Type)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody
 }
 
 classModifier {
