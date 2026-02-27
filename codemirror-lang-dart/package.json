@@ -1,7 +1,7 @@
 {
   "name": "codemirror-lang-dart",
   "version": "1.0.0",
-  "description": "Lezer-based Dart grammar",
+  "description": "Dart language support for CodeMirror 6",
   "main": "dist/index.cjs",
   "type": "module",
   "exports": {
@@ -9,10 +9,26 @@
     "require": "./dist/index.cjs"
   },
   "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "types": "dist/src/index.d.ts",
   "author": "Dart project authors",
   "license": "BSD-3-Clause",
+  "keywords": [
+    "codemirror",
+    "codemirror6",
+    "dart",
+    "lezer",
+    "grammar",
+    "syntax-highlighting"
+  ],
+  "files": [
+    "dist"
+  ],
+  "workspaces": [
+    "example"
+  ],
   "dependencies": {
+    "@codemirror/language": "^6.0.0",
     "@lezer/common": "^1.2.0",
     "@lezer/highlight": "^1.2.0",
     "@lezer/lr": "^1.4.0"
@@ -22,6 +38,7 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/mocha": "^10.0.10",
+    "eslint": "^8.56.0",
     "mocha": "^10.2.0",
     "rollup": "^2.52.2",
     "tslib": "^2.6.2",
@@ -39,6 +56,6 @@
     "prepare": "npm run build",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
-    "test": "npm run build && mocha --node-option import=tsx src/lang-dart/test/test.ts"
+    "test": "npm run build && mocha --node-option import=tsx test/test.ts"
   }
 }

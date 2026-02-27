@@ -1,0 +1,19 @@
+{
+  "name": "codemirror-lang-dart-example",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "codemirror": "^6.0.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "codemirror-lang-dart": "file:.."
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
