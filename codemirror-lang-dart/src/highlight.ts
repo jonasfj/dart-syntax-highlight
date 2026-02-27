@@ -38,7 +38,7 @@ export const dartHighlight = styleTags({
   "SingleInterpolationStart DoubleInterpolationStart TripleSingleInterpolationStart TripleDoubleInterpolationStart": tags.special(tags.variableName),
   LineComment: tags.lineComment,
   BlockComment: tags.blockComment,
-  "DocLineComment DocBlockComment": tags.docComment,
+  "DocComment DocBlockComment": tags.docComment,
   ArithOp: tags.arithmeticOperator,
   LogicOp: tags.logicOperator,
   BitwiseOp: tags.bitwiseOperator,

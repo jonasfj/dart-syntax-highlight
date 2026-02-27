@@ -2,7 +2,7 @@
 export const
   LineComment = 1,
   BlockComment = 2,
-  DocLineComment = 3,
+  DocComment = 3,
   DocBlockComment = 4,
   Program = 5,
   Directive = 6,

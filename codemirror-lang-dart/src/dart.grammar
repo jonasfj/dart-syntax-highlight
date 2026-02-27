@@ -33,7 +33,7 @@
 
 @external propSource dartHighlight from "./highlight"
 
-@skip { space | LineComment | BlockComment | DocLineComment | DocBlockComment }
+@skip { space | LineComment | BlockComment | DocComment | DocBlockComment }
 
 Directive {
   Metadata* (
@@ -78,7 +78,17 @@ Metadata {
 }
 
 Declaration {
-  Metadata* (
+  Metadata+ (
+    FunctionDeclaration |
+    VariableDeclaration |
+    ClassDeclaration |
+    MixinDeclaration |
+    ExtensionTypeDeclaration |
+    ExtensionDeclaration |
+    EnumDeclaration |
+    Typedef
+  ) |
+  (
     FunctionDeclaration |
     VariableDeclaration |
     ClassDeclaration |
@@ -108,19 +118,21 @@ EnumDeclaration {
 }
 
 ClassDeclaration {
-  classModifiers kw<"class"> Identifier (kw<"extends"> Type)? (kw<"implements"> TypeList)? (kw<"with"> TypeList)? ClassBody
+  classModifier+ ~mod kw<"class"> Identifier (kw<"extends"> Type)? (kw<"implements"> TypeList)? (kw<"with"> TypeList)? ClassBody |
+  kw<"class"> Identifier (kw<"extends"> Type)? (kw<"implements"> TypeList)? (kw<"with"> TypeList)? ClassBody
 }
 
-classModifiers {
-  (kw<"abstract"> | kw<"base"> | kw<"interface"> | kw<"final"> | kw<"sealed">)*
+classModifier {
+  kw<"abstract"> | kw<"base"> | kw<"interface"> | kw<"final"> | kw<"sealed">
 }
 
 MixinDeclaration {
-  mixinModifiers kw<"mixin"> Identifier (kw<"on"> TypeList)? (kw<"implements"> TypeList)? ClassBody
+  mixinModifier+ ~mod kw<"mixin"> Identifier (kw<"on"> TypeList)? (kw<"implements"> TypeList)? ClassBody |
+  kw<"mixin"> Identifier (kw<"on"> TypeList)? (kw<"implements"> TypeList)? ClassBody
 }
 
-mixinModifiers {
-  (kw<"base">)?
+mixinModifier {
+  kw<"base">
 }
 
 TypeList {
@@ -614,7 +626,7 @@ YieldStar { @specialize<Identifier, "yield*"> }
   @precedence {
     RawTripleSingleQuote, RawTripleDoubleQuote, TripleSingleQuote, TripleDoubleQuote,
     RawSingleQuote, RawDoubleQuote, SingleQuote, DoubleQuote,
-    DocLineComment, LineComment, DocBlockComment, BlockComment,
+    DocComment, LineComment, DocBlockComment, BlockComment,
     CompoundAssign, ShiftOp, NumberLiteral, ".", "/", "*", "+", "-", "%", "^", "&", "|", "~", "~/", Identifier
   }
 
@@ -631,7 +643,7 @@ YieldStar { @specialize<Identifier, "yield*"> }
   space { $[ \t\n\r]+ }
 
   LineComment { "//" ![\n]* }
-  DocLineComment { "///" ![\n]* }
+  DocComment { "///" ![\n]* ($[ \t\n]* "///" ![\n]*)* }
 
   BlockComment { "/*" blockCommentRest }
   DocBlockComment { "/**" blockCommentRest }
