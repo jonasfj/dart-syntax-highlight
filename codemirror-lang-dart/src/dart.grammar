@@ -1,4 +1,4 @@
-@top Program { (Directive | Declaration | TopLevelExpression)* }
+@top Program { (Directive | Declaration)* }
 
 @precedence {
   label,
@@ -58,10 +58,6 @@ PartDirective {
 
 PartOfDirective {
   kw<"part"> kw<"of"> (Identifier ("." Identifier)* | String) ";"
-}
-
-TopLevelExpression {
-  expression ";"
 }
 
 ImportDirective {

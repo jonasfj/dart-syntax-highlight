@@ -3,11 +3,11 @@
 var x = a ?? b;
 var y = a?.b;
 var z = a?[b];
-a!;
+var w = a!;
 
 ==>
 
-Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",BinaryExpression(Identifier,"??",Identifier),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",MemberExpression(Identifier,"?.",Identifier),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",IndexExpression(Identifier,QuestionBracket,Identifier,"]"),";")),TopLevelExpression(UnaryExpression(Identifier,"!"),";"))
+Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",BinaryExpression(Identifier,"??",Identifier),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",MemberExpression(Identifier,"?.",Identifier),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",IndexExpression(Identifier,QuestionBracket,Identifier,"]"),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",UnaryExpression(Identifier,"!"),";")))
 
 # Type Test
 
