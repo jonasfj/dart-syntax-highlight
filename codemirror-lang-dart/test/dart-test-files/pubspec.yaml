@@ -1,0 +1,3 @@
+name: dart_syntax_test_cases
+environment:
+  sdk: ^3.11.0

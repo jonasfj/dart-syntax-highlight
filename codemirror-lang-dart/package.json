@@ -58,6 +58,6 @@
     "prepare": "npm run build",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
-    "test": "npm run build && tsx test/grammar/test.ts test/language/mixed-mode.ts test/language/indent.ts"
+    "test": "npm run build && bash -c 'for f in $(find test -name \"*_test.ts\"); do echo \"Running $f\"; npx tsx \"$f\" || exit 1; done'"
   }
 }
