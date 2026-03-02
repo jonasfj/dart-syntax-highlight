@@ -24,7 +24,8 @@ following files which do not have automated updates from this grammar:
 
 A [Lezer](https://lezer.codemirror.net/) language grammar for Dart.
 
-See the [codemirror-lang-dart/example/](codemirror-lang-dart/example/) directory for a minimal CodeMirror 6 setup using this grammar.
+See the [codemirror-lang-dart/example/](codemirror-lang-dart/example/)
+directory for a minimal CodeMirror 6 setup using this grammar.
 
 # Other solutions
 
