@@ -1,3 +1,4 @@
+import { describe, it } from "node:test";
 import { fileTests } from "@lezer/generator/dist/test"
 import { readdirSync, readFileSync } from "fs"
 import { join, dirname } from "path"
@@ -6,25 +7,16 @@ import { parser } from "../../dist/index.js"
 
 const caseDir = join(dirname(fileURLToPath(import.meta.url)), "testdata")
 
-let failed = false;
+describe("Lezer Grammar Tests", () => {
+  for (let file of readdirSync(caseDir)) {
+    if (!/\.txt$/.test(file)) continue
 
-for (const file of readdirSync(caseDir)) {
-  if (!/\.txt$/.test(file)) continue
-  const name = /^[^.]*/.exec(file)![0]
-  console.log(`Running grammar tests for ${name}...`)
-  
-  for (const { name: n, run } of fileTests(readFileSync(join(caseDir, file), "utf8"), file)) {
-    try {
-      run(parser)
-    } catch (e) {
-      console.error(`  Test ${n} FAILED:`, e)
-      failed = true;
-    }
+    let name = /^[^\.]*/.exec(file)![0]
+    
+    describe(name, () => {
+      for (let {name: testName, run} of fileTests(readFileSync(join(caseDir, file), "utf8"), file)) {
+        it(testName, () => run(parser))
+      }
+    })
   }
-}
-
-if (failed) {
-  process.exit(1);
-} else {
-  console.log("All lezer grammar tests passed.");
-}
+})

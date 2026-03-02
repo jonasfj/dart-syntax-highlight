@@ -1,6 +1,8 @@
+import { describe, it, after } from "node:test";
 import { parser } from "../dist/index.js";
 import { readFileSync, readdirSync, statSync, existsSync } from "fs";
 import { join, relative } from "path";
+import assert from "node:assert";
 
 const curatedRoot = join(process.cwd(), "test/dart-test-files");
 
@@ -41,53 +43,59 @@ function getAllFiles(dirPath: string, arrayOfFiles: string[] = []) {
 
 const allFiles = getAllFiles(curatedRoot);
 
-let regressionCount = 0;
-let totalErrorsInDirty = 0;
+describe("Curated Dart Files", () => {
+  let totalErrorsInDirty = 0;
+  let newCleanFiles: string[] = [];
+  let knownDirtyFiles: string[] = [];
 
-console.log(`Checking curated Dart files in ${curatedRoot}...\n`);
-
-allFiles.forEach(file => {
-  const relPath = relative(curatedRoot, file);
-  const code = readFileSync(file, "utf8");
-  const tree = parser.parse(code);
-  
-  let errors: { line: number, snippet: string }[] = [];
-  tree.iterate({
-    enter: (node) => {
-      if (node.type.isError) {
-        const line = code.slice(0, node.from).split("\n").length;
-        const snippet = code.slice(node.from, Math.min(node.to + 20, code.length));
-        errors.push({ line, snippet });
-      }
+  after(() => {
+    console.log("\n--- File Parsing Summary ---");
+    if (newCleanFiles.length > 0) {
+      console.log("\n🎉 [NEW CLEAN] Consider adding these to KNOWN_CLEAN_FILES:");
+      newCleanFiles.forEach(f => console.log(`  - ${f}`));
     }
+    
+    if (knownDirtyFiles.length > 0) {
+      console.log("\n⚠️ [KNOWN DIRTY] Files that still need grammar fixes:");
+      knownDirtyFiles.forEach(f => console.log(`  - ${f}`));
+    }
+    console.log(`\nTotal errors in non-passing files: ${totalErrorsInDirty}`);
+    console.log("----------------------------\n");
   });
 
-  const isKnownClean = KNOWN_CLEAN_FILES.has(relPath);
+  for (let file of allFiles) {
+    const relPath = relative(curatedRoot, file);
+    const isKnownClean = KNOWN_CLEAN_FILES.has(relPath);
 
-  if (errors.length === 0) {
-    if (isKnownClean) {
-      console.log(`✅ [PASS] ${relPath}`);
-    } else {
-      console.log(`🎉 [NEW CLEAN] ${relPath} - Consider adding to KNOWN_CLEAN_FILES!`);
-    }
-  } else {
-    if (isKnownClean) {
-      console.error(`❌ [REGRESSION] ${relPath} (${errors.length} errors)`);
-      errors.forEach(err => console.error(`   -> Line ${err.line}: "${err.snippet.replace(/\n/g, "\\n")}..."`));
-      regressionCount++;
-    } else {
-      console.log(`⚠️ [KNOWN DIRTY] ${relPath} (${errors.length} errors)`);
-      totalErrorsInDirty += errors.length;
-    }
+    it(`parses ${relPath} ${isKnownClean ? '(KNOWN CLEAN)' : '(KNOWN DIRTY)'}`, () => {
+      const code = readFileSync(file, "utf8");
+      const tree = parser.parse(code);
+      
+      let errors: { line: number, snippet: string }[] = [];
+      tree.iterate({
+        enter: (node) => {
+          if (node.type.isError) {
+            const line = code.slice(0, node.from).split("\n").length;
+            const snippet = code.slice(node.from, Math.min(node.to + 30, code.length));
+            errors.push({ line, snippet });
+          }
+        }
+      });
+
+      if (isKnownClean) {
+        // This MUST pass.
+        const errorMessage = `Expected 0 errors, got ${errors.length}:\n` + 
+          errors.map(e => `   -> Line ${e.line}: "${e.snippet.replace(/\n/g, "\\n")}..."`).join('\n');
+        assert.strictEqual(errors.length, 0, errorMessage);
+      } else {
+        // Just record stats for known dirty files
+        if (errors.length === 0) {
+          newCleanFiles.push(relPath);
+        } else {
+          totalErrorsInDirty += errors.length;
+          knownDirtyFiles.push(`${relPath} (${errors.length} errors)`);
+        }
+      }
+    });
   }
 });
-
-console.log("\n" + "-".repeat(50));
-console.log(`Regressions: ${regressionCount}`);
-console.log(`Total errors in non-passing files: ${totalErrorsInDirty}`);
-console.log("-".repeat(50));
-
-if (regressionCount > 0) {
-  console.error("\nTEST FAILED: One or more files in KNOWN_CLEAN_FILES have regressed.");
-  process.exit(1);
-}
