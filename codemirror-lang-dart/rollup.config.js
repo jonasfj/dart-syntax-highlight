@@ -1,5 +1,6 @@
 import { nodeResolve } from "@rollup/plugin-node-resolve"
 import typescript from '@rollup/plugin-typescript';
+import { lezer } from "@lezer/generator/rollup"
 
 export default {
   input: "./src/index.ts",
@@ -14,6 +15,7 @@ export default {
   }],
   external(id) { return !/^[\.\/]/.test(id) },
   plugins: [
+    lezer(),
     nodeResolve(),
     typescript(),
   ]

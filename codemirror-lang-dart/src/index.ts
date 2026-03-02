@@ -1,4 +1,5 @@
-import { parser } from "./parser"
+import { parser } from "./dart.grammar"
+export { parser as dartParser, parser }
 import {
   LRLanguage,
   LanguageSupport,

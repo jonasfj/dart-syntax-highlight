@@ -53,8 +53,8 @@
     "url": "https://github.com/dart-lang/dart-syntax-highlight"
   },
   "scripts": {
-    "build": "lezer-generator src/dart.grammar -o src/parser && rollup -c",
-    "build-debug": "lezer-generator src/dart.grammar --names -o src/parser && rollup -c",
+    "build": "rollup -c",
+    "build-debug": "rollup -c",
     "prepare": "npm run build",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",

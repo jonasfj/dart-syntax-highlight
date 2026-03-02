@@ -2,7 +2,7 @@ import { fileTests } from "@lezer/generator/dist/test"
 import { readdirSync, readFileSync } from "fs"
 import { join, dirname } from "path"
 import { fileURLToPath } from "url"
-import { parser } from "../../src/parser.js"
+import { parser } from "../../dist/index.js"
 
 const caseDir = join(dirname(fileURLToPath(import.meta.url)), "testdata")
 
