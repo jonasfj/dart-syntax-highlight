@@ -9,6 +9,7 @@ const curatedRoot = join(process.cwd(), "test/dart-test-files");
 // Files that we explicitly know parse cleanly. If any of these fail, the test fails.
 const KNOWN_CLEAN_FILES = new Set([
   "class/basic_class.dart",
+  "class/constructors.dart",
   "class/inheritance.dart",
   "class/methods.dart",
   "class/modifiers.dart",
@@ -16,8 +17,14 @@ const KNOWN_CLEAN_FILES = new Set([
   "control_flow/if_else.dart",
   "control_flow/loops.dart",
   "control_flow/switch_basic.dart",
+  "control_flow/try_catch.dart",
   "directive/library.dart",
   "expressions/cascade.dart",
+  "expressions/operators.dart",
+  "function/named_functions.dart",
+  "generics/classes.dart",
+  "generics/methods.dart",
+  "types/basic_types.dart",
   "variables/local_vars.dart",
   "variables/top_level.dart"
 ]);

@@ -127,8 +127,8 @@ EnumEntry {
 }
 
 ClassDeclaration {
-  classModifier+ ~mod kw<"class"> Identifier (kw<"extends"> Type)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody |
-  kw<"class"> Identifier (kw<"extends"> Type)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody
+  classModifier+ ~mod kw<"class"> Identifier (TypeParameters)? (kw<"extends"> Type)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody |
+  kw<"class"> Identifier (TypeParameters)? (kw<"extends"> Type)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody
 }
 
 classModifier {
@@ -136,8 +136,8 @@ classModifier {
 }
 
 MixinDeclaration {
-  mixinModifier+ ~mod kw<"mixin"> Identifier (kw<"on"> TypeList)? (kw<"implements"> TypeList)? ClassBody |
-  kw<"mixin"> Identifier (kw<"on"> TypeList)? (kw<"implements"> TypeList)? ClassBody
+  mixinModifier+ ~mod kw<"mixin"> Identifier (TypeParameters)? (kw<"on"> TypeList)? (kw<"implements"> TypeList)? ClassBody |
+  kw<"mixin"> Identifier (TypeParameters)? (kw<"on"> TypeList)? (kw<"implements"> TypeList)? ClassBody
 }
 
 mixinModifier {
@@ -178,7 +178,7 @@ FunctionDeclaration {
   !func (Async | AsyncStar | SyncStar)? (
     Type Identifier |
     Identifier
-  ) ~ambig "(" ParameterList ")" (Block | "=>" expression ";") ~ambig
+  ) ~ambig (TypeParameters)? "(" ParameterList ")" (Block | "=>" expression ";") ~ambig
 }
 
 Type {
@@ -236,11 +236,23 @@ Initializer {
 
 
 ParameterList {
-  (Parameter ("," Parameter)* ","?)?
+  (
+    (Parameter ("," Parameter)*)? ("," OptionalParameterList)? |
+    OptionalParameterList
+  ) ","?
+}
+
+OptionalParameterList {
+  "[" Parameter ("," Parameter)* ","? "]" |
+  "{" NamedParameter ("," NamedParameter)* ","? "}"
 }
 
 Parameter {
   Metadata* (Type !param Identifier | Identifier | kw<"this"> "." Identifier | kw<"super"> "." Identifier)
+}
+
+NamedParameter {
+  Metadata* kw<"required">? (Type !param Identifier | Identifier | kw<"this"> "." Identifier | kw<"super"> "." Identifier) ("=" expression)?
 }
 
 Block {
@@ -310,11 +322,12 @@ YieldStatement {
 }
 
 TryStatement {
-  kw<"try"> Block (OnClause | CatchClause)+ FinallyClause?
+  kw<"try"> Block (OnClause | CatchClause)+ FinallyClause? |
+  kw<"try"> Block FinallyClause
 }
 
 OnClause {
-  kw<"on"> Type (!catch kw<"catch"> CatchClauseBody)? Block
+  kw<"on"> Type (kw<"catch"> CatchClauseBody | Block)
 }
 
 CatchClause {
@@ -349,7 +362,7 @@ ReturnStatement {
 
 VariableDeclaration {
   (
-    (kw<"var"> | kw<"final"> | kw<"const">)? Type !varDeclIdentifier Identifier ("=" expression)? |
+    (kw<"var"> | kw<"final"> | kw<"const">)? Type !varDeclIdentifier Identifier ("=" expression)? ("," Identifier ("=" expression)?)* |
     patternVarDecl
   ) ~ambig ";"
 }
@@ -412,7 +425,12 @@ expression {
   MemberExpression |
   CallExpression |
   IndexExpression |
+  ThrowExpression |
   ParenthesizedExpression
+}
+
+ThrowExpression {
+  kw<"throw"> expression
 }
 
 ParenthesizedExpression { "(" expression ")" }
@@ -472,7 +490,11 @@ IndexExpression {
 }
 
 ArgumentList {
-  "(" (expression ("," expression)* ","?)? ")"
+  "(" (Argument ("," Argument)* ","?)? ")"
+}
+
+Argument {
+  (Identifier ":")? expression
 }
 
 
@@ -483,6 +505,14 @@ TypeIdentifier[@dynamicPrecedence=-1] {
 
 TypeArguments {
   "<" Type ("," Type)* ">"
+}
+
+TypeParameters {
+  "<" TypeParameter ("," TypeParameter)* ">"
+}
+
+TypeParameter {
+  Metadata* Identifier (kw<"extends"> Type)?
 }
 
 RecordType {
@@ -637,7 +667,8 @@ YieldStar { @specialize<Identifier, "yield*"> }
   Identifier { $[a-zA-Z_] $[a-zA-Z0-9_]* }
 
   NumberLiteral {
-    (@digit+ (".." @digit*)? | "." @digit+) ( $[eE] $[+-]? @digit+ )?
+    (@digit+ ("." @digit+)? | "." @digit+) ( $[eE] $[+-]? @digit+ )? |
+    "0x" $[0-9a-fA-F]+
   }
 
   SingleQuote { "'" }
@@ -656,7 +687,7 @@ YieldStar { @specialize<Identifier, "yield*"> }
     RawTripleSingleQuote, RawTripleDoubleQuote, TripleSingleQuote, TripleDoubleQuote,
     RawSingleQuote, RawDoubleQuote, SingleQuote, DoubleQuote,
     DocComment, LineComment, DocBlockComment, BlockComment,
-    CompoundAssign, ShiftOp, NumberLiteral, ".", "/", "*", "+", "-", "%", "^", "&", "|", "~", "~/", Identifier
+    CompoundAssign, ShiftOp, NumberLiteral, ".", "/", "*", "+", "-", "%", "^", "&", "|", "~/", "~", Identifier
   }
 
   "+" "-" "*" "/" "%" "~/"
