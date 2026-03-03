@@ -176,9 +176,18 @@ Setter {
 
 FunctionDeclaration {
   !func (Async | AsyncStar | SyncStar)? (
-    Type Identifier |
-    Identifier
+    Type (Identifier | OperatorName) |
+    (Identifier | OperatorName)
   ) ~ambig (TypeParameters)? "(" ParameterList ")" (Block | "=>" expression ";") ~ambig
+}
+
+OperatorName {
+  kw<"operator"> (
+    "+" | "-" | "*" | "/" | "%" | "~/" |
+    "&" | "|" | "^" | "~" |
+    "<<" | ">>" | ">>>" |
+    "<" | ">" | "<=" | ">=" | "==" | "[]" | "[]="
+  )
 }
 
 Type {
@@ -416,6 +425,7 @@ ForElement {
 expression {
   Identifier |
   Literal |
+  AwaitExpression |
   AssignmentExpression |
   BinaryExpression |
   UnaryExpression |
@@ -427,6 +437,10 @@ expression {
   IndexExpression |
   ThrowExpression |
   ParenthesizedExpression
+}
+
+AwaitExpression {
+  kw<"await"> expression
 }
 
 ThrowExpression {
