@@ -49,71 +49,63 @@ Directive {
 }
 
 LibraryDirective {
-  kw<"library"> (Identifier ("." Identifier)*)? ";"
+  (~ambig builtin<"library"> ~ambig (identifier ("." identifier)*)? ";") ~ambig
 }
 
 PartDirective {
-  kw<"part"> String ";"
+  (~ambig builtin<"part"> ~ambig String ";") ~ambig
 }
 
 PartOfDirective {
-  kw<"part"> kw<"of"> (Identifier ("." Identifier)* | String) ";"
+  (~ambig builtin<"part"> ~ambig builtin<"of"> (identifier ("." identifier)* | String) ";") ~ambig
 }
 
 ImportDirective {
-  kw<"import"> String (kw<"as"> Identifier)? (kw<"show"> IdentifierList)? (kw<"hide"> IdentifierList)? ";"
+  (~ambig builtin<"import"> ~ambig String (builtin<"as"> identifier)? (builtin<"show"> IdentifierList)? (builtin<"hide"> IdentifierList)? ";") ~ambig
 }
 
 ExportDirective {
-  kw<"export"> String (kw<"show"> IdentifierList)? (kw<"hide"> IdentifierList)? ";"
+  (~ambig builtin<"export"> ~ambig String (builtin<"show"> IdentifierList)? (builtin<"hide"> IdentifierList)? ";") ~ambig
 }
 
 IdentifierList {
-  Identifier ("," Identifier)*
+  identifier ("," identifier)*
 }
 
 Metadata {
-  "@" Identifier ("." Identifier)? ~meta ("(" ArgumentList ")")?
+  "@" identifier (!member "." identifier)* (!generic TypeArguments)? (!member "." identifier)? ~meta (!call ArgumentList)?
 }
 
 Declaration {
-  Metadata+ (
-    FunctionDeclaration |
-    VariableDeclaration |
-    ClassDeclaration |
-    MixinDeclaration |
-    ExtensionTypeDeclaration |
-    ExtensionDeclaration |
-    EnumDeclaration |
-    Typedef
-  ) |
-  (
-    FunctionDeclaration |
-    VariableDeclaration |
-    ClassDeclaration |
-    MixinDeclaration |
-    ExtensionTypeDeclaration |
-    ExtensionDeclaration |
-    EnumDeclaration |
-    Typedef
+  Metadata* (
+    (builtin<"external"> | builtin<"augment">)* ~ambig (
+      FunctionDeclaration |
+      VariableDeclaration |
+      ClassDeclaration |
+      MixinDeclaration |
+      ExtensionTypeDeclaration |
+      ExtensionDeclaration |
+      EnumDeclaration |
+      Typedef
+    )
   )
 }
 
 ExtensionDeclaration {
-  kw<"extension"> (Identifier)? (!generic TypeArguments)? kw<"on"> Type ClassBody
+  builtin<"extension"> ~ambig (identifier)? (!generic TypeParameters)? builtin<"on"> Type ClassBody ~ambig
 }
 
-Typedef {
-  kw<"typedef"> Identifier (!generic TypeArguments)? "=" Type ";" |
-  kw<"typedef"> Type? Identifier ~ambig ParameterList ";"
+Typedef[@dynamicPrecedence=2] {
+  builtin<"typedef"> ~ambig identifier (TypeParameters)? "=" Type ";" |
+  builtin<"typedef"> ~ambig Type? identifier ~ambig ParameterList ";"
 }
 
 ExtensionTypeDeclaration {
-  kw<"extension"> kw<"type"> kw<"const">? Type ("." Identifier)? "(" ParameterList ")" (kw<"implements"> TypeList)? ClassBody
+  builtin<"extension"> ~ambig builtin<"type"> builtin<"const">? Type ("." identifier)? "(" ParameterList ")" (builtin<"implements"> TypeList)? ClassBody
 }
 
 EnumDeclaration {
-  kw<"enum"> Identifier (!generic TypeArguments)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? "{" EnumBody? "}"
+  kw<"enum"> ~ambig identifier (!generic TypeParameters)? (builtin<"with"> TypeList)? (builtin<"implements"> TypeList)? "{" EnumBody? "}"
 }
 
 EnumBody {
@@ -123,25 +115,23 @@ EnumBody {
 }
 
 EnumEntry {
-  Metadata* Identifier TypeArguments? ("." Identifier)? ArgumentList?
+  Metadata* identifier TypeArguments? ("." identifier)? ArgumentList?
 }
 
 ClassDeclaration {
-  classModifier+ ~mod kw<"class"> Identifier (TypeParameters)? (kw<"extends"> Type)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody |
-  kw<"class"> Identifier (TypeParameters)? (kw<"extends"> Type)? (kw<"with"> TypeList)? (kw<"implements"> TypeList)? ClassBody
+  classModifier* ~mod kw<"class"> ~ambig identifier (!generic TypeParameters)? (builtin<"extends"> Type)? (builtin<"with"> TypeList)? (builtin<"implements"> TypeList)? ClassBody
 }
 
 classModifier {
-  kw<"abstract"> | kw<"base"> | kw<"interface"> | kw<"final"> | kw<"sealed"> | kw<"mixin">
+  (builtin<"abstract"> | builtin<"base"> | builtin<"interface"> | builtin<"final"> | builtin<"sealed"> | builtin<"mixin">) ~ambig
 }
 
 MixinDeclaration {
-  mixinModifier+ ~mod kw<"mixin"> Identifier (TypeParameters)? (kw<"on"> TypeList)? (kw<"implements"> TypeList)? ClassBody |
-  kw<"mixin"> Identifier (TypeParameters)? (kw<"on"> TypeList)? (kw<"implements"> TypeList)? ClassBody
+  mixinModifier* ~mod builtin<"mixin"> ~ambig identifier (!generic TypeParameters)? (builtin<"on"> TypeList)? (builtin<"implements"> TypeList)? ClassBody
 }
 
 mixinModifier {
-  kw<"base">
+  builtin<"base"> ~ambig
 }
 
 TypeList {
@@ -154,38 +144,37 @@ ClassBody {
 
 MemberDeclaration {
   Metadata* (
-    !constructor ConstructorDeclaration | 
-    FunctionDeclaration | 
-    Getter | 
-    Setter | 
-    VariableDeclaration
-  ) |
-  ";"
+    (builtin<"external"> | builtin<"static"> | builtin<"covariant"> | builtin<"augment">)* ~ambig (
+      ConstructorDeclaration |
+      FunctionDeclaration |
+      Getter |
+      Setter |
+      VariableDeclaration
+    ) |
+    ";"
+  )
 }
 
-
 Getter {
-  Type? kw<"get"> Identifier (Block | "=>" expression ";")
+  Type? builtin<"get"> ~ambig identifier (Block | "=>" expression ";")
 }
 
 Setter {
-  Type? kw<"set"> Identifier "(" Parameter ")" (Block | "=>" expression ";")
+  Type? builtin<"set"> ~ambig identifier "(" Parameter ")" (Block | "=>" expression ";")
 }
 
-// ...
-
 FunctionDeclaration {
-  !func (Async | AsyncStar | SyncStar)? (
-    Type (Identifier | OperatorName) |
-    (Identifier | OperatorName)
-  ) ~ambig (TypeParameters)? "(" ParameterList ")" (Block | "=>" expression ";") ~ambig
+  !func (
+    Type ~ambig (identifier | OperatorName) |
+    (identifier | OperatorName)
+  ) ~ambig (TypeParameters)? "(" ParameterList ")" (Async | AsyncStar | SyncStar)? (Block | "=>" expression ";" | ";") ~ambig
 }
 
 OperatorName {
-  kw<"operator"> (
+  builtin<"operator"> ~ambig (
     "+" | "-" | "*" | "/" | "%" | "~/" |
     "&" | "|" | "^" | "~" |
-    "<<" | ">>" | ">>>" |
+    ShiftOp |
     "<" | ">" | "<=" | ">=" | "==" | "[]" | "[]="
   )
 }
@@ -198,34 +187,39 @@ TypeNoQuestion {
   (TypeIdentifier (!generic TypeArguments)? |
   RecordType |
   FunctionType |
-  kw<"void">) ~ambig
+  builtin<"void">) ~ambig
 }
 
 FunctionType {
-  Type? kw<"Function"> (!generic TypeArguments)? "(" ParameterTypeList ")"
+  Type? builtin<"Function"> ~ambig (!generic TypeParameters)? "(" ParameterTypeList ")"
 }
 
 ParameterTypeList {
-  (ParameterType ("," ParameterType)* ","?)?
+  (
+    (ParameterType ("," ParameterType)*)? ("," OptionalParameterTypeList)? |
+    OptionalParameterTypeList
+  ) ","?
+}
+
+OptionalParameterTypeList {
+  "[" ParameterType ("," ParameterType)* ","? "]" |
+  "{" NamedParameterType ("," NamedParameterType)* ","? "}"
 }
 
 ParameterType {
-  Metadata* Type Identifier?
+  Metadata* Type identifier?
 }
 
+NamedParameterType {
+  Metadata* builtin<"required">? Type identifier?
+}
+
+
 ConstructorDeclaration[@dynamicPrecedence=10] {
-  !constructor (kw<"const"> !constructor | kw<"factory">) ~mod Identifier ("." Identifier)? ~constructor !constructor "(" ParameterList ")"
+  !constructor ((builtin<"const"> | builtin<"factory">) ~ambig)? ~mod identifier ("." identifier)? ~constructor !constructor "(" ParameterList ")"
   (
     ":" Initializers (Block | ";") |
-    "=" Type ("." Identifier)? ";" |
-    Block |
-    "=>" expression ";" |
-    ";"
-  ) |
-  !constructor Identifier ("." Identifier)? "(" ParameterList ")"
-  (
-    ":" Initializers (Block | ";") |
-    "=" Type ("." Identifier)? ";" |
+    "=" Type ("." identifier)? ";" |
     Block |
     "=>" expression ";" |
     ";"
@@ -237,9 +231,9 @@ Initializers {
 }
 
 Initializer {
-  kw<"super"> ("." Identifier)? ArgumentList |
-  kw<"this"> ("." Identifier)? ArgumentList |
-  Identifier ("." Identifier)? "=" expression
+  builtin<"super"> ("." identifier)? ArgumentList |
+  builtin<"this"> ("." identifier)? ArgumentList |
+  identifier ("." identifier)? "=" expression
 }
 
 
@@ -257,11 +251,11 @@ OptionalParameterList {
 }
 
 Parameter {
-  Metadata* (Type !param Identifier | Identifier | kw<"this"> "." Identifier | kw<"super"> "." Identifier)
+  Metadata* (Type !param identifier | identifier | builtin<"this"> "." identifier | builtin<"super"> "." identifier)
 }
 
 NamedParameter {
-  Metadata* kw<"required">? (Type !param Identifier | Identifier | kw<"this"> "." Identifier | kw<"super"> "." Identifier) ("=" expression)?
+  Metadata* builtin<"required">? (Type !param identifier | identifier | builtin<"this"> "." identifier | builtin<"super"> "." identifier) ("=" expression)?
 }
 
 Block {
@@ -292,19 +286,19 @@ AssertStatement {
 }
 
 RethrowStatement {
-  kw<"rethrow"> ";"
+  builtin<"rethrow"> ";"
 }
 
 DoWhileStatement {
-  kw<"do"> Statement kw<"while"> "(" expression ")" ";"
+  builtin<"do"> Statement builtin<"while"> "(" expression ")" ";"
 }
 
 BreakStatement {
-  kw<"break"> Identifier? ";"
+  builtin<"break"> identifier? ";"
 }
 
 ContinueStatement {
-  kw<"continue"> Identifier? ";"
+  builtin<"continue"> identifier? ";"
 }
 
 SwitchStatement {
@@ -313,71 +307,70 @@ SwitchStatement {
 
 SwitchLabel[@dynamicPrecedence=1] {
   Label* (
-    kw<"case"> Pattern WhenClause? ":" |
-    kw<"default"> ":"
+    builtin<"case"> Pattern WhenClause? ":" |
+    builtin<"default"> ":"
   )
 }
 
 WhenClause {
-  kw<"when"> expression
+  builtin<"when"> expression
 }
 
 Label {
-  Identifier !label ":"
+  identifier !label ":"
 }
 
 YieldStatement {
-  (Yield | YieldStar) expression ";"
+  (Yield | YieldStar) ~ambig expression ";"
 }
 
 TryStatement {
-  kw<"try"> Block (OnClause | CatchClause)+ FinallyClause? |
-  kw<"try"> Block FinallyClause
+  (builtin<"try"> Block (OnClause | CatchClause)+ FinallyClause? |
+  builtin<"try"> Block FinallyClause) ~ambig
 }
 
 OnClause {
-  kw<"on"> Type (kw<"catch"> CatchClauseBody | Block)
+  !catch builtin<"on"> Type (builtin<"catch"> CatchClauseBody | Block) ~ambig
 }
 
 CatchClause {
-  kw<"catch"> CatchClauseBody
+  !catch builtin<"catch"> CatchClauseBody
 }
 
 CatchClauseBody {
-  "(" Identifier ("," Identifier)? ")" Block
+  "(" identifier ("," identifier)? ")" Block
 }
 
 FinallyClause {
-  kw<"finally"> Block
+  builtin<"finally"> Block
 }
 
 ExpressionStatement { expression ";" }
 
 IfStatement {
-  kw<"if"> "(" expression (kw<"case"> Pattern WhenClause?)? ")" Statement (!else kw<"else"> Statement)?
+  kw<"if"> "(" expression (builtin<"case"> Pattern WhenClause?)? ")" Statement (!else builtin<"else"> Statement)?
 }
 
 WhileStatement {
-  kw<"while"> "(" expression ")" Statement
+  builtin<"while"> "(" expression ")" Statement
 }
 
 ForStatement {
-  kw<"for"> ("(" ( ( (kw<"var"> | kw<"final"> | kw<"const"> | Type)? Pattern ("=" expression)? ) | expression | "") ";" expression? ";" expression? ")")? Statement
+  builtin<"for"> ("(" ( ( (builtin<"var"> | builtin<"final"> | builtin<"const"> | Type)? Pattern ("=" expression)? ) | expression | "") ";" expression? ";" expression? ")")? Statement
 }
 
 ReturnStatement {
-  kw<"return"> expression? ";"
+  builtin<"return"> expression? ";"
 }
 
 VariableDeclaration {
-  (
-    (kw<"var"> | kw<"final"> | kw<"const">)? Type !varDeclIdentifier Identifier ("=" expression)? ("," Identifier ("=" expression)?)* |
+  ((builtin<"var"> | builtin<"final"> | builtin<"const">)? Type ~ambig !varDeclIdentifier identifier ("=" expression)? ("," identifier ("=" expression)?)* |
     patternVarDecl
   ) ~ambig ";"
 }
 
 patternVarDecl[@dynamicPrecedence=-10] {
-  (kw<"var"> | kw<"final"> | kw<"const">) !pattern Pattern ("=" expression)?
+  (builtin<"var"> | builtin<"final"> | builtin<"const">) !pattern Pattern ("=" expression)?
 }
 
 Literal {
@@ -391,11 +384,11 @@ Literal {
 }
 
 ListLiteral {
-  kw<"const">? (!generic TypeArguments)? "[" (Element ("," Element)* ","?)? "]"
+  builtin<"const">? (!generic TypeArguments)? "[" (Element ("," Element)* ","?)? "]"
 }
 
 SetOrMapLiteral {
-  kw<"const">? (!generic TypeArguments)? "{" (Element ("," Element)* ","?)? "}" ~ambig
+  builtin<"const">? (!generic TypeArguments)? "{" (Element ("," Element)* ","?)? "}" ~ambig
 }
 
 Element {
@@ -415,17 +408,17 @@ SpreadElement {
 }
 
 IfElement {
-  kw<"if"> "(" expression ")" Element (!else kw<"else"> Element)?
+  kw<"if"> "(" expression ")" Element (!else builtin<"else"> Element)?
 }
 
 ForElement {
-  kw<"for"> "(" ( ( (kw<"var"> | kw<"final"> | kw<"const"> | Type)? Pattern ("=" expression)? ) | expression | "") ";" expression? ";" expression? ")" Element |
-  kw<"await">? kw<"for"> "(" ( (kw<"var"> | kw<"final"> | Type)? Pattern ) kw<"in"> expression ")" Element
+  builtin<"for"> "(" ( ( (builtin<"var"> | builtin<"final"> | builtin<"const"> | Type)? Pattern ("=" expression)? ) | expression | "") ";" expression? ";" expression? ")" Element |
+  builtin<"await">? builtin<"for"> "(" ( (builtin<"var"> | builtin<"final"> | Type)? Pattern ) builtin<"in"> expression ")" Element
 }
 expression {
-  Identifier |
+  ~ambig !type identifier |
   Literal |
-  AwaitExpression |
+  builtin<"await"> expression |
   AssignmentExpression |
   BinaryExpression |
   UnaryExpression |
@@ -439,12 +432,8 @@ expression {
   ParenthesizedExpression
 }
 
-AwaitExpression {
-  kw<"await"> expression
-}
-
 ThrowExpression {
-  kw<"throw"> expression
+  builtin<"throw"> expression
 }
 
 ParenthesizedExpression { "(" expression ")" }
@@ -473,7 +462,7 @@ BinaryExpression {
 }
 
 TypeExpression {
-  expression !typeOp ( kw<"is"> "!"? | kw<"as"> ) Type
+  expression !typeOp ( builtin<"is"> "!"? | builtin<"as"> ) Type
 }
 
 ConditionalExpression {
@@ -487,12 +476,12 @@ CascadeExpression {
 CascadeOp { ".." | "?.." }
 
 CascadeSection {
-  !cascade Identifier ArgumentList? |
+  !cascade identifier ArgumentList? |
   "[" expression "]"
 }
 
 MemberExpression {
-  expression !member ("." | "?.") Identifier
+  expression !member ("." | "?.") identifier
 }
 
 CallExpression {
@@ -508,13 +497,13 @@ ArgumentList {
 }
 
 Argument {
-  (Identifier ":")? expression
+  (identifier ":")? expression
 }
 
 
 
 TypeIdentifier[@dynamicPrecedence=-1] {
-  !type Identifier
+  !type identifier
 }
 
 TypeArguments {
@@ -526,7 +515,7 @@ TypeParameters {
 }
 
 TypeParameter {
-  Metadata* Identifier (kw<"extends"> Type)?
+  Metadata* identifier (builtin<"extends"> Type)?
 }
 
 RecordType {
@@ -538,7 +527,7 @@ RecordType {
 }
 
 RecordTypeField {
-  Metadata* Type Identifier?
+  Metadata* Type identifier?
 }
 
 RecordTypeNamedBlock {
@@ -546,13 +535,13 @@ RecordTypeNamedBlock {
 }
 
 RecordTypeNamedField {
-  Metadata* Type Identifier
+  Metadata* Type identifier
 }
 
 
 
 RecordLiteral {
-  kw<"const">? "(" (
+  builtin<"const">? "(" (
     expression "," (RecordField ("," RecordField)* ","?)? |
     NamedRecordField ("," RecordField)* ","? |
     ""
@@ -564,7 +553,7 @@ RecordField {
 }
 
 NamedRecordField {
-  Identifier ":" expression
+  identifier ":" expression
 }
 
 String {
@@ -651,34 +640,36 @@ RawString {
 }
 
 InterpolationSingle {
-  SingleInterpolationStart (Identifier | "{" expression "}")
+  SingleInterpolationStart (identifier | "{" expression "}")
 }
 
 InterpolationDouble {
-  DoubleInterpolationStart (Identifier | "{" expression "}")
+  DoubleInterpolationStart (identifier | "{" expression "}")
 }
 
 InterpolationTripleSingle {
-  TripleSingleInterpolationStart (Identifier | "{" expression "}")
+  TripleSingleInterpolationStart (identifier | "{" expression "}")
 }
 
 InterpolationTripleDouble {
-  TripleDoubleInterpolationStart (Identifier | "{" expression "}")
+  TripleDoubleInterpolationStart (identifier | "{" expression "}")
 }
 
 BooleanLiteral { kw<"true"> | kw<"false"> }
 NullLiteral { kw<"null"> }
 
 kw<term> { @specialize[@name={term}]<Identifier, term> }
+builtin<term> { @extend[@name={term}]<Identifier, term> }
 
-Async { @specialize<Identifier, "async"> }
-AsyncStar { @specialize<Identifier, "async*"> }
-SyncStar { @specialize<Identifier, "sync*"> }
-Yield { @specialize<Identifier, "yield"> }
-YieldStar { @specialize<Identifier, "yield*"> }
+Async { @extend<Identifier, "async"> }
+AsyncStar { @extend<Identifier, "async*"> }
+SyncStar { @extend<Identifier, "sync*"> }
+Yield { @extend<Identifier, "yield"> }
+YieldStar { @extend<Identifier, "yield*"> }
 
 @tokens {
-  Identifier { $[a-zA-Z_] $[a-zA-Z0-9_]* }
+  Identifier { $[a-zA-Z_$] $[a-zA-Z0-9_$]* }
+
 
   NumberLiteral {
     (@digit+ ("." @digit+)? | "." @digit+) ( $[eE] $[+-]? @digit+ )? |
@@ -738,16 +729,17 @@ RelationalPattern {
 }
 
 UnaryPattern {
-  Pattern !typeOp kw<"as"> Type |
+  Pattern !typeOp builtin<"as"> Type |
   PrimaryPattern ("?" | "!") ~ambig
 }
-
 PrimaryPattern {
   Literal ~ambig |
-  Identifier ~ambig |
+  identifier ~ambig |
   ParenthesizedPattern |
   ListPattern |
-  MapPattern
+  MapPattern |
+  RecordPattern |
+  ObjectPattern
 }
 
 ParenthesizedPattern { "(" Pattern ~ambig ")" ~ambig }
@@ -772,9 +764,21 @@ RecordPattern {
 }
 
 PatternField {
-  (Identifier ~ambig ":")? Pattern ~ambig
+  (identifier ~ambig ":")? Pattern ~ambig
 }
 
 ObjectPattern[@dynamicPrecedence=-2] {
   TypeNoQuestion (!generic TypeArguments)? ~ambig ~constructor "(" (PatternField ("," PatternField)* ","?)? ")"
+}
+
+identifier {
+  (Identifier |
+  builtin<"abstract"> | builtin<"as"> | builtin<"covariant"> | builtin<"deferred"> | builtin<"dynamic"> |
+  builtin<"export"> | builtin<"extension"> | builtin<"external"> | builtin<"factory"> | builtin<"Function"> |
+  builtin<"get"> | builtin<"implements"> | builtin<"import"> | builtin<"interface"> | builtin<"late"> |
+  builtin<"library"> | builtin<"operator"> | builtin<"mixin"> | builtin<"part"> | builtin<"required"> |
+  builtin<"set"> | builtin<"static"> | builtin<"typedef"> |
+  Async | AsyncStar | SyncStar | Yield | YieldStar |
+  builtin<"base"> | builtin<"hide"> | builtin<"of"> | builtin<"on"> | builtin<"sealed"> | builtin<"show"> | builtin<"sync"> | builtin<"when"> |
+  builtin<"type"> | builtin<"augment">) ~ambig
 }
