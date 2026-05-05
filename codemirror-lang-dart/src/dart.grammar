@@ -1,4 +1,4 @@
-@top Program { (Directive | Declaration)* }
+@top Program { Directive* Declaration* }
 
 @precedence {
   label,
@@ -15,6 +15,11 @@
   catch,
   varDeclIdentifier,
   constructor,
+  class,
+  mixin,
+  enum,
+  typedef,
+  extension,
   pattern,
   mul @left,
   add @left,
@@ -49,23 +54,23 @@ Directive {
 }
 
 LibraryDirective {
-  (~ambig builtin<"library"> ~ambig (identifier ("." identifier)*)? ";") ~ambig
+  builtin<"library"> ~ambig (identifier ("." identifier)*)? ";"
 }
 
 PartDirective {
-  (~ambig builtin<"part"> ~ambig String ";") ~ambig
+  builtin<"part"> ~ambig String ";"
 }
 
 PartOfDirective {
-  (~ambig builtin<"part"> ~ambig builtin<"of"> (identifier ("." identifier)* | String) ";") ~ambig
+  builtin<"part"> ~ambig builtin<"of"> (identifier ("." identifier)* | String) ";"
 }
 
 ImportDirective {
-  (~ambig builtin<"import"> ~ambig String (builtin<"as"> identifier)? (builtin<"show"> IdentifierList)? (builtin<"hide"> IdentifierList)? ";") ~ambig
+  builtin<"import"> ~ambig String (builtin<"as"> identifier)? (builtin<"show"> IdentifierList)? (builtin<"hide"> IdentifierList)? ";"
 }
 
 ExportDirective {
-  (~ambig builtin<"export"> ~ambig String (builtin<"show"> IdentifierList)? (builtin<"hide"> IdentifierList)? ";") ~ambig
+  builtin<"export"> ~ambig String (builtin<"show"> IdentifierList)? (builtin<"hide"> IdentifierList)? ";"
 }
 
 IdentifierList {
@@ -73,7 +78,7 @@ IdentifierList {
 }
 
 Metadata {
-  "@" identifier (!member "." identifier)* (!generic TypeArguments)? (!member "." identifier)? ~meta (!call ArgumentList)?
+  "@" identifier (!member "." identifier)* (!call ArgumentList)?
 }
 
 Declaration {
@@ -92,20 +97,20 @@ Declaration {
 }
 
 ExtensionDeclaration {
-  builtin<"extension"> ~ambig (identifier)? (!generic TypeParameters)? builtin<"on"> Type ClassBody ~ambig
+  builtin<"extension"> !extension (identifier)? (!generic TypeParameters)? builtin<"on"> Type ClassBody ~ambig
 }
 
 Typedef[@dynamicPrecedence=2] {
-  builtin<"typedef"> ~ambig identifier (TypeParameters)? "=" Type ";" |
-  builtin<"typedef"> ~ambig Type? identifier ~ambig ParameterList ";"
+  builtin<"typedef"> !typedef identifier (TypeParameters)? "=" Type ";" |
+  builtin<"typedef"> !typedef Type? identifier ~ambig ParameterList ";"
 }
 
 ExtensionTypeDeclaration {
-  builtin<"extension"> ~ambig builtin<"type"> builtin<"const">? Type ("." identifier)? "(" ParameterList ")" (builtin<"implements"> TypeList)? ClassBody
+  builtin<"extension"> !extension builtin<"type"> builtin<"const">? Type ("." identifier)? "(" ParameterList ")" (builtin<"implements"> TypeList)? ClassBody
 }
 
 EnumDeclaration {
-  kw<"enum"> ~ambig identifier (!generic TypeParameters)? (builtin<"with"> TypeList)? (builtin<"implements"> TypeList)? "{" EnumBody? "}"
+  kw<"enum"> !enum identifier (!generic TypeParameters)? (builtin<"with"> TypeList)? (builtin<"implements"> TypeList)? "{" EnumBody? "}"
 }
 
 EnumBody {
@@ -119,7 +124,7 @@ EnumEntry {
 }
 
 ClassDeclaration {
-  classModifier* ~mod kw<"class"> ~ambig identifier (!generic TypeParameters)? (builtin<"extends"> Type)? (builtin<"with"> TypeList)? (builtin<"implements"> TypeList)? ClassBody
+  classModifier* ~mod kw<"class"> !class identifier (!generic TypeParameters)? (builtin<"extends"> Type)? (builtin<"with"> TypeList)? (builtin<"implements"> TypeList)? ClassBody
 }
 
 classModifier {
@@ -127,7 +132,7 @@ classModifier {
 }
 
 MixinDeclaration {
-  mixinModifier* ~mod builtin<"mixin"> ~ambig identifier (!generic TypeParameters)? (builtin<"on"> TypeList)? (builtin<"implements"> TypeList)? ClassBody
+  mixinModifier* ~mod builtin<"mixin"> !mixin identifier (!generic TypeParameters)? (builtin<"on"> TypeList)? (builtin<"implements"> TypeList)? ClassBody
 }
 
 mixinModifier {
@@ -780,5 +785,5 @@ identifier {
   builtin<"set"> | builtin<"static"> | builtin<"typedef"> |
   Async | AsyncStar | SyncStar | Yield | YieldStar |
   builtin<"base"> | builtin<"hide"> | builtin<"of"> | builtin<"on"> | builtin<"sealed"> | builtin<"show"> | builtin<"sync"> | builtin<"when"> |
-  builtin<"type"> | builtin<"augment">) ~ambig
+  builtin<"type"> | builtin<"augment">)
 }
