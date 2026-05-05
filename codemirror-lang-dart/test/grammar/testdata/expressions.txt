@@ -7,7 +7,7 @@ var w = a!;
 
 ==>
 
-Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",BinaryExpression(Identifier,"??",Identifier),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",MemberExpression(Identifier,"?.",Identifier),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",IndexExpression(Identifier,QuestionBracket,Identifier,"]"),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",UnaryExpression(Identifier,"!"),";")))
+Program(Declaration(VariableDeclaration("var",Identifier,"=",BinaryExpression(Identifier,"??",Identifier),";")),Declaration(VariableDeclaration("var",Identifier,"=",MemberExpression(Identifier,"?.",Identifier),";")),Declaration(VariableDeclaration("var",Identifier,"=",IndexExpression(Identifier,QuestionBracket,Identifier,"]"),";")),Declaration(VariableDeclaration("var",Identifier,"=",UnaryExpression(Identifier,"!"),";")))
 
 # Type Test
 
@@ -17,4 +17,4 @@ var d = a as int;
 
 ==>
 
-Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",TypeExpression(Identifier,is,Type(TypeNoQuestion(TypeIdentifier(Identifier)))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",TypeExpression(Identifier,is,"!",Type(TypeNoQuestion(TypeIdentifier(Identifier)))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",TypeExpression(Identifier,as,Type(TypeNoQuestion(TypeIdentifier(Identifier)))),";")))
+Program(Declaration(VariableDeclaration("var",Identifier,"=",TypeExpression(Identifier,"is",Type(TypeNoQuestion(TypeIdentifier(Identifier)))),";")),Declaration(VariableDeclaration("var",Identifier,"=",TypeExpression(Identifier,"is","!",Type(TypeNoQuestion(TypeIdentifier(Identifier)))),";")),Declaration(VariableDeclaration("var",Identifier,"=",TypeExpression(Identifier,"as",Type(TypeNoQuestion(TypeIdentifier(Identifier)))),";")))

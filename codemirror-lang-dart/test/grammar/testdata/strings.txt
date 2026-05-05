@@ -5,7 +5,7 @@ var s2 = "world";
 
 ==>
 
-Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(SingleString(SingleQuote,SingleQuoteEnd))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(DoubleString(DoubleQuote,DoubleQuoteEnd))),";")))
+Program(Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(SingleString(SingleQuote,SingleQuoteEnd))),";")),Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(DoubleString(DoubleQuote,DoubleQuoteEnd))),";")))
 
 # Interpolation
 
@@ -14,7 +14,7 @@ var s2 = 'val: ${x + 1}';
 
 ==>
 
-Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(DoubleString(DoubleQuote,InterpolationDouble(DoubleInterpolationStart,Identifier),DoubleQuoteEnd))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(SingleString(SingleQuote,InterpolationSingle(SingleInterpolationStart,"{",BinaryExpression(Identifier,"+",Literal(NumberLiteral)),"}"),SingleQuoteEnd))),";")))
+Program(Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(DoubleString(DoubleQuote,InterpolationDouble(DoubleInterpolationStart,Identifier),DoubleQuoteEnd))),";")),Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(SingleString(SingleQuote,InterpolationSingle(SingleInterpolationStart,"{",BinaryExpression(Identifier,"+",Literal(NumberLiteral)),"}"),SingleQuoteEnd))),";")))
 
 # Escapes
 
@@ -23,7 +23,7 @@ var s2 = 'a \' b';
 
 ==>
 
-Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(DoubleString(DoubleQuote,DoubleEscape,DoubleQuoteEnd))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(SingleString(SingleQuote,SingleEscape,SingleQuoteEnd))),";")))
+Program(Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(DoubleString(DoubleQuote,DoubleEscape,DoubleQuoteEnd))),";")),Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(SingleString(SingleQuote,SingleEscape,SingleQuoteEnd))),";")))
 
 # Adjacent Strings
 
@@ -31,7 +31,7 @@ var s = 'a' "b";
 
 ==>
 
-Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(SingleString(SingleQuote,SingleQuoteEnd),DoubleString(DoubleQuote,DoubleQuoteEnd))),";")))
+Program(Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(SingleString(SingleQuote,SingleQuoteEnd),DoubleString(DoubleQuote,DoubleQuoteEnd))),";")))
 
 # Triple Strings
 
@@ -41,7 +41,7 @@ var s2 = """$interpolated""";
 
 ==>
 
-Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(TripleSingleString(TripleSingleQuote,TripleSingleQuoteEnd))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(TripleDoubleString(TripleDoubleQuote,InterpolationTripleDouble(TripleDoubleInterpolationStart,Identifier),TripleDoubleQuoteEnd))),";")))
+Program(Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(TripleSingleString(TripleSingleQuote,TripleSingleQuoteEnd))),";")),Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(TripleDoubleString(TripleDoubleQuote,InterpolationTripleDouble(TripleDoubleInterpolationStart,Identifier),TripleDoubleQuoteEnd))),";")))
 
 # Raw Strings
 
@@ -50,4 +50,4 @@ var r2 = r"no \escapes";
 
 ==>
 
-Program(Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(RawString(RawSingleString(RawSingleQuote,RawSingleQuoteEnd)))),";")),Declaration(VariableDeclaration(var,Pattern(PrimaryPattern(Identifier)),"=",Literal(String(RawString(RawDoubleString(RawDoubleQuote,RawDoubleQuoteEnd)))),";")))
+Program(Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(RawString(RawSingleString(RawSingleQuote,RawSingleQuoteEnd)))),";")),Declaration(VariableDeclaration("var",Identifier,"=",Literal(String(RawString(RawDoubleString(RawDoubleQuote,RawDoubleQuoteEnd)))),";")))

@@ -9,21 +9,4 @@ enum Color {
 
 ==>
 
-Program(
-  Declaration(
-    EnumDeclaration(
-      enum,
-      Identifier,
-      "{",
-      EnumBody(
-        EnumEntry(Identifier, ArgumentList("(", Argument(Literal(NumberLiteral)), ")")),
-        ",",
-        EnumEntry(Identifier, ArgumentList("(", Argument(Literal(NumberLiteral)), ")")),
-        ";",
-        MemberDeclaration(VariableDeclaration(final, Type(TypeNoQuestion(TypeIdentifier(Identifier))), Identifier)),
-        MemberDeclaration(ConstructorDeclaration(const, Identifier, "(", ParameterList(Parameter(this, ".", Identifier)), ")", ";"))
-      ),
-      "}"
-    )
-  )
-)
+Program(Declaration(EnumDeclaration("enum",Identifier,"{",EnumBody(EnumEntry(Identifier,ArgumentList("(",Argument(Literal(NumberLiteral)),")")),",",EnumEntry(Identifier,ArgumentList("(",Argument(Literal(NumberLiteral)),")")),";",MemberDeclaration(VariableDeclaration("final",Type(TypeNoQuestion(TypeIdentifier(Identifier))),Identifier,";")),MemberDeclaration(VariableDeclaration("const",Pattern(PrimaryPattern(ObjectPattern(TypeNoQuestion(TypeIdentifier(Identifier)),"(","⚠"("this"),"⚠"("."),PatternField(Pattern(PrimaryPattern(Identifier))),")"))),";"))),"}")))

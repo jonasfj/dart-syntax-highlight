@@ -9,7 +9,7 @@ void main() {
 
 ==>
 
-Program(Declaration(FunctionDeclaration(Type(TypeNoQuestion(void)),Identifier,"(",ParameterList,")",Block("{",Statement(SwitchStatement(switch,"(",Identifier,")","{",SwitchLabel(case,Pattern(PrimaryPattern(Literal(NumberLiteral))),":"),Statement(BreakStatement(break,";")),"}")),"}"))))
+Program(Declaration(FunctionDeclaration(Type(TypeNoQuestion("void")),Identifier,"(",ParameterList,")",Block("{",Statement(SwitchStatement("switch","(",Identifier,")","{",SwitchLabel("case",Pattern(PrimaryPattern(Literal(NumberLiteral))),":"),Statement(BreakStatement("break",";")),"}")),"}"))))
 
 # Assert & Rethrow
 
@@ -20,4 +20,4 @@ void main() {
 
 ==>
 
-Program(Declaration(FunctionDeclaration(Type(TypeNoQuestion(void)),Identifier,"(",ParameterList,")",Block("{",Statement(AssertStatement(assert,"(",BinaryExpression(Identifier,"!=",Literal(NullLiteral(null))),")",";")),Statement(RethrowStatement(rethrow,";")),"}"))))
+Program(Declaration(FunctionDeclaration(Type(TypeNoQuestion("void")),Identifier,"(",ParameterList,")",Block("{",Statement(AssertStatement("assert","(",BinaryExpression(Identifier,"!=",Literal(NullLiteral("null"))),")",";")),Statement(RethrowStatement("rethrow",";")),"}"))))
